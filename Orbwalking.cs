@@ -98,6 +98,11 @@ namespace LeagueSharp.Common
         private static bool _missileLaunched;
         private static readonly Random _random = new Random(DateTime.Now.Millisecond);
 
+        public static int TickCount
+        {
+            get { return (int)(Game.ClockTime * 1000); }
+        }
+
         static Orbwalking()
         {
             Player = ObjectManager.Player;
@@ -242,9 +247,9 @@ namespace LeagueSharp.Common
         /// </summary>
         public static bool CanAttack()
         {
-            if (LastAATick <= Utils.TickCount)
+            if (LastAATick <= TickCount)
             {
-                return Utils.TickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 && Attack;
+                return TickCount + Game.Ping / 2 + 25 >= LastAATick + Player.AttackDelay * 1000 && Attack;
             }
 
             return false;
@@ -264,11 +269,11 @@ namespace LeagueSharp.Common
             }
                 
 
-            if (LastAATick <= Utils.TickCount)
+            if (LastAATick <= TickCount)
             {
                 return NoCancelChamps.Contains(Player.ChampionName)
-                    ? (Utils.TickCount - LastAATick > 250)
-                    : (Utils.TickCount + Game.Ping / 2 >= LastAATick + Player.AttackCastDelay * 1000 + extraWindup);
+                    ? (TickCount - LastAATick > 250)
+                    : (TickCount + Game.Ping / 2 >= LastAATick + Player.AttackCastDelay * 1000 + extraWindup);
             }
 
             return false;
@@ -300,12 +305,12 @@ namespace LeagueSharp.Common
             bool useFixedDistance = true,
             bool randomizeMinDistance = true)
         {
-            if (Utils.TickCount - LastMoveCommandT < _delay && !overrideTimer)
+            if (TickCount - LastMoveCommandT < _delay && !overrideTimer)
             {
                 return;
             }
 
-            LastMoveCommandT = Utils.TickCount;
+            LastMoveCommandT = TickCount;
 
             if (Player.ServerPosition.Distance(position, true) < holdAreaRadius * holdAreaRadius)
             {
@@ -424,7 +429,7 @@ namespace LeagueSharp.Common
                 if (unit.IsMe &&
                     (Spell.Target is Obj_AI_Base || Spell.Target is Obj_BarracksDampener || Spell.Target is Obj_HQ))
                 {
-                    LastAATick = Utils.TickCount - Game.Ping / 2;
+                    LastAATick = TickCount - Game.Ping / 2;
                     _missileLaunched = false;
 
                     if (Spell.Target is Obj_AI_Base)
