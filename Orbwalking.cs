@@ -384,7 +384,8 @@ namespace LeagueSharp.Common
                 Console.WriteLine(e.ToString());
             }
         }
-
+            if (CanMove(0))
+                return;
         /// <summary>
         ///     Resets the Auto-Attack timer.
         /// </summary>
